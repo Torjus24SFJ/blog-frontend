@@ -1,4 +1,5 @@
 export interface BlogPost {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     titleImage: any
     _id: string
     _createdAt: string

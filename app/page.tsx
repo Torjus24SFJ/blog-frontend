@@ -27,7 +27,6 @@ export default async function Home() {
 
   return (
     <div className='flex flex-col items-center gap-20'>
-      <h1 className='text-4xl text-blue-500 font-bold p-4'>My Blog</h1>
       {posts.map((post: BlogPost) => (
          <Link 
          href={`/blog/${post.slug.current}`} 
