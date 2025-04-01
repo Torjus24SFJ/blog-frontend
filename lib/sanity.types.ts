@@ -8,6 +8,7 @@ export interface BlogPost {
       current: string
     }
     content?: unknown[] 
+    smallDescription?: string
   }
   
   export const allPostsQuery = `*[_type == "blog"]{

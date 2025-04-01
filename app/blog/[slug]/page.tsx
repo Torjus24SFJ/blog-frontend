@@ -1,10 +1,12 @@
-import { client } from '@/lib/sanity';
-import { PortableText } from '@portabletext/react';
-import { urlFor } from '@/lib/sanity.image';
-import { BlogPost } from '@/lib/sanity.types';
+import { client } from "@/lib/sanity";
+import { PortableText } from "@portabletext/react";
+import { urlFor } from "@/lib/sanity.image";
+import { BlogPost } from "@/lib/sanity.types";
 
 export async function generateStaticParams() {
-  const posts = await client.fetch(`*[_type == "blog"]{ "slug": slug.current }`);
+  const posts = await client.fetch(
+    `*[_type == "blog"]{ "slug": slug.current }`
+  );
   return posts;
 }
 
@@ -14,13 +16,13 @@ async function getPost(slug: string): Promise<BlogPost> {
       _id,
       title,
       titleImage { asset->{ url }, alt },
-      content
+      content,
+      smallDescription,
     }`,
     { slug }
   );
 }
 
-// Define how to render different content types
 const components = {
   types: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +30,7 @@ const components = {
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={urlFor(value).url()}
-        alt={value.alt || ''}
+        alt={value.alt || ""}
         className="my-4 rounded-lg max-w-full h-auto"
       />
     ),
@@ -55,10 +57,10 @@ const components = {
   marks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     link: ({ value, children }: { value: any; children: React.ReactNode }) => (
-      <a 
-        href={value?.href} 
-        className="text-blue-600 hover:underline" 
-        target="_blank" 
+      <a
+        href={value?.href}
+        className="text-blue-600 hover:underline"
+        target="_blank"
         rel="noopener noreferrer"
       >
         {children}
@@ -100,20 +102,17 @@ export default async function BlogPost({
   return (
     <article className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-6">{post.title}</h1>
-      
+
       {post.titleImage && (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={urlFor(post.titleImage).url()}
           alt={post.titleImage.alt || post.title}
           className="w-full max-h-96 object-cover rounded-lg mb-8"
         />
       )}
-      
-      <div className="prose lg:prose-xl max-w-none">
-        <PortableText
-          value={post.content}
-          components={components}
-        />
+      <div className="text-gray-600 mt-2 text-[18px]">
+        <PortableText value={post.content} components={components} />
       </div>
     </article>
   );

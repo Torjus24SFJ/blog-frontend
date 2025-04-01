@@ -7,7 +7,8 @@ async function getPosts() {
     _id,
     title,
     slug,
-    titleImage { asset->{ url }, alt }
+    smallDescription,
+    titleImage { asset->{ url }, alt },
   }`);
 }
 
