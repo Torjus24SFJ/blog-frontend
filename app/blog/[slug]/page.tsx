@@ -48,6 +48,9 @@ const components = {
     h3: ({ children }: { children: React.ReactNode }) => (
       <h3 className="text-xl font-bold mt-6 mb-3">{children}</h3>
     ),
+    h4: ({ children }: { children: React.ReactNode }) => (
+      <h3 className="text-xl font-bold mt-6 mb-3">{children}</h3>
+    ),
     blockquote: ({ children }: { children: React.ReactNode }) => (
       <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4">
         {children}
@@ -111,7 +114,8 @@ export default async function BlogPost({
           className="w-full max-h-96 object-cover rounded-lg mb-8"
         />
       )}
-      <div className="text-gray-600 mt-2 text-[18px]">
+
+      <div className="prose">
         <PortableText value={post.content} components={components} />
       </div>
     </article>
