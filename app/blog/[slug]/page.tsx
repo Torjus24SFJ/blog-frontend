@@ -1,7 +1,7 @@
 import { client } from "@/lib/sanity";
-import { PortableText } from "@portabletext/react";
+import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanity.image";
-import { BlogPost } from "@/lib/sanity.types";
+import { BlogPost, LinkAnnotation, SanityImage } from "@/lib/sanity.types";
 
 export async function generateStaticParams() {
   const posts = await client.fetch(
@@ -10,14 +10,14 @@ export async function generateStaticParams() {
   return posts;
 }
 
-async function getPost(slug: string): Promise<BlogPost> {
+async function getPost(slug: string): Promise<BlogPost | null> {
   return await client.fetch(
     `*[_type == "blog" && slug.current == $slug][0]{
       _id,
       title,
       titleImage { asset->{ url }, alt },
-      content,
       smallDescription,
+      content,
     }`,
     { slug }
   );
@@ -25,8 +25,7 @@ async function getPost(slug: string): Promise<BlogPost> {
 
 const components = {
   types: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    image: ({ value }: { value: any }) => (
+    image: ({ value }: { value: SanityImage }) => (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={urlFor(value).url()}
@@ -58,10 +57,9 @@ const components = {
     ),
   },
   marks: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    link: ({ value, children }: { value: any; children: React.ReactNode }) => (
+    link: ({ value, children }: { value?: LinkAnnotation; children: React.ReactNode }) => (
       <a
-        href={value?.href}
+        href={value?.href || "#"}
         className="text-blue-600 hover:underline"
         target="_blank"
         rel="noopener noreferrer"
@@ -91,16 +89,17 @@ const components = {
   },
 };
 
-export default async function BlogPost({
+export default async function BlogPostPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const post = await getPost(params.slug);
 
-  if (!post) {
+  if (!post || post.content === null || post.content === undefined) {
     return <div className="text-center py-10">Post not found</div>;
   }
+
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-8">
@@ -110,7 +109,7 @@ export default async function BlogPost({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={urlFor(post.titleImage).url()}
-          alt={post.titleImage.alt || post.title}
+          alt={post.titleImage.alt || ""}
           className="w-full max-h-96 object-cover rounded-lg mb-8"
         />
       )}

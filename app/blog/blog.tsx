@@ -9,6 +9,7 @@ async function getPosts() {
     slug,
     smallDescription,
     titleImage { asset->{ url }, alt },
+    content,
   }`);
 }
 

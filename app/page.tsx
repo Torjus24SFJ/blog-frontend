@@ -15,8 +15,8 @@ async function getPosts() {
       },
       alt
     },
-    content,
     smallDescription,
+    content,
   }`;
   const posts = await client.fetch(query);
   return posts;
